@@ -38,6 +38,7 @@ export async function getManifest() {
       'tabs',
       'storage',
       'activeTab',
+      'webRequest',
     ],
     host_permissions: ['*://*/*'],
     content_scripts: [
@@ -46,6 +47,8 @@ export async function getManifest() {
           '<all_urls>',
         ],
         js: [
+          'vendor/ffmpeg.min.js',
+          'vendor/ffmpeg-core.js',
           'dist/contentScripts/index.global.js',
         ],
       },
@@ -55,22 +58,21 @@ export async function getManifest() {
         resources: ['dist/contentScripts/style.css'],
         matches: ['<all_urls>'],
       },
+      {
+        resources: ['vendor/ffmpeg-core.js',
+          'vendor/ffmpeg-core.wasm',
+          'vendor/ffmpeg-core.worker.js'],
+        matches: ['<all_urls>'],
+      },
     ],
     content_security_policy: {
       extension_pages: isDev
         // this is required on dev for Vite script to load
         ? `script-src \'self\' http://localhost:${port}; object-src \'self\'`
         : 'script-src \'self\'; object-src \'self\'',
+      // ? `object-src \'self\'; script-src \'self\' http://localhost:${port} \'wasm-unsafe-eval\';`
+      // : 'script-src \'self\' \'unsafe-eval\' https://unpkg.com; object-src \'self\'; script-src-elem \'self\' https://unpkg.com/@ffmpeg',
     },
-  }
-
-  // FIXME: not work in MV3
-  if (isDev && false) {
-    // for content script, as browsers will cache them for each reload,
-    // we use a background script to always inject the latest version
-    // see src/background/contentScriptHMR.ts
-    delete manifest.content_scripts
-    manifest.permissions?.push('webNavigation')
   }
 
   return manifest

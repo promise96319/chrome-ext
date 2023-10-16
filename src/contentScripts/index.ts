@@ -5,8 +5,10 @@ import App from './views/App.vue'
 import { setupApp } from '~/logic/common-setup'
 
 // Firefox `browser.tabs.executeScript()` requires scripts return a primitive value
-(() => {
+(async () => {
   console.info('[vitesse-webext] Hello world from content script')
+
+  // console.log('res', res)
 
   // communication example: send previous tab title from background page
   onMessage('tab-prev', ({ data }) => {

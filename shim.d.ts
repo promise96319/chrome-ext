@@ -8,3 +8,4 @@ declare module 'webext-bridge' {
     'get-current-tab': ProtocolWithReturn<{ tabId: number }, { title?: string }>
   }
 }
+
