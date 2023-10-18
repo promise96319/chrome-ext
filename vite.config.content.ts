@@ -21,6 +21,7 @@ export default defineConfig({
     cssCodeSplit: false,
     emptyOutDir: false,
     sourcemap: isDev ? 'inline' : false,
+    minify: false,
     lib: {
       entry: r('src/contentScripts/index.ts'),
       name: packageJson.name,

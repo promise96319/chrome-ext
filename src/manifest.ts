@@ -47,7 +47,7 @@ export async function getManifest() {
           '<all_urls>',
         ],
         js: [
-          'vendor/ffmpeg.min.js',
+          // 'vendor/ffmpeg.js',
           'vendor/ffmpeg-core.js',
           'dist/contentScripts/index.global.js',
         ],
@@ -59,9 +59,13 @@ export async function getManifest() {
         matches: ['<all_urls>'],
       },
       {
-        resources: ['vendor/ffmpeg-core.js',
+        resources: [
+          'vendor/ffmpeg.js',
+          'vendor/814.ffmpeg.js',
+          'vendor/ffmpeg-core.js',
           'vendor/ffmpeg-core.wasm',
-          'vendor/ffmpeg-core.worker.js'],
+          'vendor/ffmpeg-core.worker.js'
+        ],
         matches: ['<all_urls>'],
       },
     ],
