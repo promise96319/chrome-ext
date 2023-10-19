@@ -76,7 +76,7 @@ export const sharedConfig: UserConfig = {
     exclude: [
       'vue-demi',
       '@ffmpeg/ffmpeg',
-      '@ffmpeg/util'
+      '@ffmpeg/util',
     ],
   },
 }
