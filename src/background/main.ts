@@ -1,5 +1,7 @@
 import { onMessage } from 'webext-bridge/background'
 
+import cctvBootstrap from './cctv'
+
 // only on dev mode
 if (import.meta.hot) {
   // @ts-expect-error for background HMR
@@ -13,20 +15,18 @@ browser.runtime.onInstalled.addListener((): void => {
   console.log('Extension installed')
 })
 
-// ==== 央视频系在 ====
-let cctvVideoUrl: string
-
-chrome.webRequest.onCompleted.addListener(
-  (details) => {
-    // 获取特定 URL 请求的条件，例如，以'http://example.com'开头的请求
-    if (details.url.startsWith('https://vdn.apps.cntv.cn/api/getHttpVideoInfo.do'))
-      cctvVideoUrl = details.url
-  },
-  { urls: ['<all_urls>'] }, // 监听所有 URL
-)
-
-onMessage<{ url: string }>('get-cctv-video-url', () => {
-  console.log('cctvVideoUrl', cctvVideoUrl)
-
-  return { url: cctvVideoUrl }
+onMessage<any>('cors-fetch', (params) => {
+  const { url, type, ...restParams } = params.data
+  return fetch(url, restParams).then((res) => {
+    switch (type) {
+      case 'json':
+        return res.json()
+      case 'buffer':
+        return res.arrayBuffer()
+      default:
+        return res.text()
+    }
+  })
 })
+
+cctvBootstrap()

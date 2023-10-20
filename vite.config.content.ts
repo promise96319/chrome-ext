@@ -21,6 +21,7 @@ export default defineConfig({
     cssCodeSplit: false,
     emptyOutDir: false,
     sourcemap: isDev ? 'inline' : false,
+    minify: false,
     lib: {
       entry: r('src/contentScripts/index.ts'),
       name: packageJson.name,
@@ -31,6 +32,12 @@ export default defineConfig({
         entryFileNames: 'index.global.js',
         extend: true,
       },
+    },
+  },
+  server: {
+    headers: {
+      'Cross-Origin-Opener-Policy': 'same-origin',
+      'Cross-Origin-Embedder-Policy': 'require-corp',
     },
   },
 })
