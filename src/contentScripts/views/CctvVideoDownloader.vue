@@ -3,6 +3,8 @@ import 'uno.css'
 import { sendMessage } from 'webext-bridge/content-script'
 import { downloadUrl, log, transformM3u8oMp4 } from '~/util'
 
+const loading = ref<boolean>(false)
+
 const download = async () => {
   const requestUrl = await sendMessage<string>('get-cctv-video-url', {})
 
@@ -13,13 +15,14 @@ const download = async () => {
   }
   log('请求', requestUrl)
 
+  loading.value = true
   const { title, hls_url: cctvUrl } = await fetch(requestUrl).then(res => res.json())
   log('链接', title, cctvUrl)
 
-  const fileName = 'video.mp4'
+  const mp4Url = await transformM3u8oMp4(cctvUrl)
+  await downloadUrl(mp4Url, `${title}.mp4`)
 
-  const mp4Url = await transformM3u8oMp4(cctvUrl, fileName)
-  await downloadUrl(mp4Url, 'fileName')
+  loading.value = false
 }
 </script>
 
@@ -29,7 +32,8 @@ const download = async () => {
       class="flex w-10 h-10 rounded-full shadow cursor-pointer border-none" bg="teal-600 hover:teal-700"
       @click="download"
     >
-      <pixelarticons-power class="block m-auto text-white text-lg" />
+      <ant-design-loading-outlined v-if="loading" class="block m-auto text-white text-lg animate-rotate" />
+      <ant-design-download-outlined v-else class="block m-auto text-white text-lg" />
     </button>
   </div>
 </template>
